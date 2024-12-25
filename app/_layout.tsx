@@ -1,39 +1,35 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
-import 'react-native-reanimated';
-
-import { useColorScheme } from '@/hooks/useColorScheme';
-
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
+import { useFonts } from "expo-font"
+import { SplashScreen, Stack } from "expo-router";
+import { useEffect } from "react";
+import "./globals.css"
+import GlobalProvider from "@/lib/global-provider";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
+
+  const [fonts] = useFonts({
+    'Rubik-Bold': require('../assets/fonts/Rubik-Bold.ttf'),
+    'Rubik-ExtraBold': require('../assets/fonts/Rubik-ExtraBold.ttf'),
+    'Rubik-Light': require('../assets/fonts/Rubik-Light.ttf'),
+    'Rubik-Medium': require('../assets/fonts/Rubik-Medium.ttf'),
+    'Rubik-Regular': require('../assets/fonts/Rubik-Regular.ttf'),
+    'Rubik-Semibold': require('../assets/fonts/Rubik-SemiBold.ttf')
+  })
 
   useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
+    if (fonts) {
+      SplashScreen.hideAsync()
     }
-  }, [loaded]);
+  }, [fonts])
 
-  if (!loaded) {
-    return null;
+  if (!fonts) {
+    return null
   }
-
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <GlobalProvider>
+      <GestureHandlerRootView>
+        <Stack screenOptions={{headerShown: false}}/>
+      </GestureHandlerRootView>
+    </GlobalProvider>
   );
 }
